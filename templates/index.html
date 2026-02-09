@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anonymous Real-Time Chat</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+
+<h2>Anonymous Communication Project</h2>
+<p><b>Your Anonymous ID:</b> {{ user_id }}</p>
+
+<input type="text" id="message" placeholder="Type message">
+<button onclick="sendMessage()">Send</button>
+
+<hr>
+<div id="chat"></div>
+
+<script>
+    const socket = io();
+
+    function sendMessage() {
+        let msg = document.getElementById("message").value;
+        if(msg === "") return;
+
+        socket.emit("send_message", {
+            user: "{{ user_id }}",
+            message: msg
+        });
+
+        document.getElementById("message").value = "";
+    }
+
+    socket.on("receive_message", function(data) {
+        let chat = document.getElementById("chat");
+        chat.innerHTML += `<p><b>${data.user}:</b> ${data.message}</p>`;
+    });
+</script>
+
+</body>
+</html>
